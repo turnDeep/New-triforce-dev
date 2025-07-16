@@ -1,65 +1,65 @@
 {
-“name”: “New Triforce Dev Container”,
-“version”: “2.0.0”,
-
-“image”: “mcr.microsoft.com/devcontainers/javascript-node:1-20-bookworm”,
-
-“postCreateCommand”: “npm install -g @anthropic-ai/claude-code @google/gemini-cli && make setup”,
-
-“customizations”: {
-“vscode”: {
-“settings”: {
-“terminal.integrated.defaultProfile.linux”: “bash”,
-“editor.formatOnSave”: true,
-“editor.codeActionsOnSave”: {
-“source.fixAll.eslint”: true
-},
-“typescript.preferences.importModuleSpecifier”: “relative”,
-“files.exclude”: {
-“**/node_modules”: true,
-“**/.next”: true,
-“**/dist”: true
-}
-},
-“extensions”: [
-“dbaeumer.vscode-eslint”,
-“esbenp.prettier-vscode”,
-“bradlc.vscode-tailwindcss”,
-“prisma.prisma”,
-“ms-vscode.vscode-typescript-next”
-]
-}
-},
-
-“remoteUser”: “node”,
-
-“features”: {
-“ghcr.io/devcontainers/features/git:1”: {},
-“ghcr.io/devcontainers/features/github-cli:1”: {},
-“ghcr.io/devcontainers/features/docker-in-docker:2”: {}
-},
-
-“forwardPorts”: [3000, 5173, 8080],
-
-“postStartCommand”: “echo ‘🔺 New Triforce Dev Environment Ready! 🔺’”,
-
-“remoteEnv”: {
-“ANTHROPIC_API_KEY”: “${localEnv:ANTHROPIC_API_KEY}”,
-“GEMINI_API_KEY”: “${localEnv:GEMINI_API_KEY}”
-},
-
-“mounts”: [
-{
-“source”: “${localEnv:HOME}/PDF”,
-“target”: “/home/node/PDF”,
-“type”: “bind”,
-“consistency”: “cached”
-}
-],
-
-“containerEnv”: {
-“NODE_ENV”: “development”,
-“GEMINI_SETTINGS_PATH”: “/workspace/.gemini/settings.json”,
-“CLAUDE_MEMORY_PATH”: “/workspace/.claude/memory.json”
-}
+  "name": "New Triforce Dev Container",
+  "version": "2.0.0",
+  
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-20-bookworm",
+  
+  "postCreateCommand": "npm install -g @anthropic-ai/claude-code @google/gemini-cli && make setup",
+  
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": true
+        },
+        "typescript.preferences.importModuleSpecifier": "relative",
+        "files.exclude": {
+          "**/node_modules": true,
+          "**/.next": true,
+          "**/dist": true
+        }
+      },
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss",
+        "prisma.prisma",
+        "ms-vscode.vscode-typescript-next"
+      ]
+    }
+  },
+  
+  "remoteUser": "node",
+  
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+  
+  "forwardPorts": [3000, 5173, 8080],
+  
+  "postStartCommand": "echo '🔺 New Triforce Dev Environment Ready! 🔺'",
+  
+  "remoteEnv": {
+    "ANTHROPIC_API_KEY": "${localEnv:ANTHROPIC_API_KEY}",
+    "GEMINI_API_KEY": "${localEnv:GEMINI_API_KEY}"
+  },
+  
+  "mounts": [
+    {
+      "source": "${localEnv:HOME}/PDF",
+      "target": "/home/node/PDF",
+      "type": "bind",
+      "consistency": "cached"
+    }
+  ],
+  
+  "containerEnv": {
+    "NODE_ENV": "development",
+    "GEMINI_SETTINGS_PATH": "/workspace/.gemini/settings.json",
+    "CLAUDE_MEMORY_PATH": "/workspace/.claude/memory.json"
+  }
 }
