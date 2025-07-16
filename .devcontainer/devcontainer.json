@@ -1,0 +1,29 @@
+{
+  "name": "Claude Code & Gemini CLI Dev Container",
+  "version": "1.1.0",
+  
+  // buildの代わりに直接imageを使用
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-20-bookworm",
+  
+  // 以下は変更なし
+  "postCreateCommand": "npm install -g @anthropic-ai/claude-code @google/gemini-cli && make setup",
+  
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      },
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode"  
+      ]
+    }
+  },
+  
+  "remoteUser": "node",
+  
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  }
+}
