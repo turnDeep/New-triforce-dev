@@ -1,92 +1,319 @@
-# トラブルシューティングガイド
+# トラブルシューティングガイド - 新三位一体版
 
-三位一体開発フレームワーク使用時に発生しうる一般的な問題とその解決策をまとめました。
+新三位一体開発フレームワーク使用時に発生しうる問題とその解決策をまとめました。
 
-## 1. Claude Code関連
+## 🏗️ Kiro関連
 
-### 問題: Claude Codeが応答しない、または同じエラーを繰り返す
-- **原因**: コンテキストの飽和、誤った前提に基づくループ。
+### 問題: Kiroが起動しない
+
+- **原因**: システム要件を満たしていない、ポート競合
 - **解決策**:
-    1. **コンテキストリセット**: Claude Code内で `/clear` コマンドを実行して、会話履歴をクリアします。
-    2. **手動での視点変更**: Gemini CLIを使って、問題について異なる角度から質問し、その結果をClaudeに伝えます。
-       ```bash
-       gemini -p "現在[問題の状況]で困っています。[試したこと]をしましたが解決しません。他に考えられる原因やアプローチはありますか？"
-       ```
-    3. **`/project:stuck-helper` コマンド**: `.claude/commands/stuck-helper.sh` (または同等のカスタムコマンド) を使用して、定義済みのプロンプトでGeminiに助けを求めます。
-    4. **具体的な指示**: Claudeに、より具体的で段階的な指示を与えてみてください。
-    5. **CLAUDE.mdの見直し**: `CLAUDE.md`の指示が曖昧でないか、誤解を招く可能性がないか確認します。
+1. **システム要件確認**:
+  - メモリ: 8GB以上推奨
+  - ディスク: 2GB以上の空き容量
+1. **ポート確認**: Kiroはポート3333を使用
+   
+   ```bash
+   lsof -i :3333  # Mac/Linux
+   netstat -ano | findstr :3333  # Windows
+   ```
+1. **再インストール**: 最新版をダウンロードして再インストール
 
-### 問題: Claude CodeがAPIキーを認識しない
-- **原因**: 環境変数の設定ミス、認証情報の期限切れ。
+### 問題: 仕様書が生成されない
+
+- **原因**: 要件が曖昧、Kiroの設定不備
 - **解決策**:
-    1. **環境変数の確認**: `ANTHROPIC_API_KEY`が正しく設定されているか確認します。Dev Containerを使用している場合は、コンテナ内での環境変数も確認してください。
-    2. **再認証**: `claude`コマンドを実行し、再度OAuth認証プロセスを試みます。
-    3. **APIキーの有効性確認**: AnthropicのダッシュボードでAPIキーが有効か確認します。
+1. **要件の具体化**:
+   
+   ```
+   ❌ Bad: "ユーザー管理機能"
+   ✅ Good: "メールアドレスとパスワードでログイン、プロフィール編集、退会機能を含むユーザー管理"
+   ```
+1. **Kiro設定確認**:
+   
+   ```bash
+   cat .kiro/settings.json
+   # specDrivenDevelopment.enabled が true か確認
+   ```
+1. **ログ確認**:
+   
+   ```bash
+   cat .kiro/logs/latest.log
+   ```
 
-## 2. Gemini CLI関連
+### 問題: 月50回の制限に達した
 
-### 問題: Gemini CLIが実装やファイル編集をしようとする
-- **原因**: Geminiのデフォルトの挙動、`GEMINI.md`の設定不足。
+- **原因**: 無料枠の上限
 - **解決策**:
-    1. **`GEMINI.md`の確認**: `GEMINI.md`で、Geminiの役割が調査、分析、レビューに限定されていることを明確に指示します。特に、「あなたはコードの直接編集やファイル操作を行いません」といった記述が重要です。
-    2. **`settings.json`の確認**: Gemini CLIのユーザー設定ファイル (`~/.gemini/settings.json` またはプロジェクト内のサンプル `settings.json.sample` を参照) で、ファイル編集関連のツールが無効化されているか確認します。
-       ```json
-       "tools": {
-         "disabled": [
-           "edit",
-           "write-file",
-           "shell"
-         ]
-       }
-       ```
-    3. **プロンプトの工夫**: Geminiに質問する際に、「～について調査してください」「～のメリット・デメリットを教えてください」のように、行動を具体的に指示します。
+1. **バッチ処理**: 複数の要件をまとめて1回で処理
+1. **テンプレート活用**: 類似プロジェクトの仕様書を再利用
+1. **手動作成**: 緊急時は仕様書を手動で作成
+   
+   ```bash
+   cp templates/spec-template.md .kiro/specs/manual/
+   ```
 
-### 問題: Gemini CLIのレート制限に達する
-- **原因**: 無料枠の上限超過。
+## 💻 Claude Code関連
+
+### 問題: 実装が仕様書と異なる
+
+- **原因**: 仕様書の同期ミス、Claude Codeの解釈エラー
 - **解決策**:
-    1. **APIキーの使用**: Google AI StudioでAPIキーを取得し、`GEMINI_API_KEY`環境変数を設定して使用します。
-    2. **時間をおく**: 無料枠は時間経過でリセットされるため、しばらく待ってから再試行します。
-    3. **問い合わせの最適化**: Geminiへの問い合わせ回数を減らせるよう、質問をまとめて行う、より具体的な質問をするなどの工夫をします。
+1. **仕様書の再同期**:
+   
+   ```bash
+   make sync-spec
+   ```
+1. **生成された型定義の確認**:
+   
+   ```bash
+   cat src/types/generated.types.ts
+   ```
+1. **実装リセット**:
+   
+   ```bash
+   git stash
+   claude
+   > /clear
+   > /project:implement-spec
+   ```
 
-## 3. Dev Container関連
+### 問題: 40回/5時間の制限に達した
 
-### 問題: Dev Containerのビルドに失敗する
-- **原因**: Dockerfileの構文エラー、ネットワーク問題、ベースイメージの取得失敗。
+- **原因**: Claude Codeの使用制限
 - **解決策**:
-    1. **エラーログ確認**: VS Codeの出力パネルで「Dev Containers」のログを確認し、具体的なエラーメッセージを特定します。
-    2. **Dockerfile/devcontainer.jsonの検証**: ファイルの構文が正しいか、特にJSONのカンマや括弧、Dockerfileのコマンドを確認します。
-    3. **ネットワーク接続**: Dockerがイメージやパッケージをダウンロードできるか、ネットワーク接続を確認します。プロキシ環境の場合は、Dockerのプロキシ設定も確認してください。
-    4. **ベースイメージの存在確認**: Dockerfileの`FROM`で指定しているイメージがDocker Hub等に存在するか確認します。
+1. **効率的な指示**: 複数のタスクをまとめて実行
+1. **自動モード活用**: 人間の確認を減らして自動実行
+1. **時間調整**: 5時間待つか、別のプロジェクトで作業
 
-### 問題: `postCreateCommand`が失敗する
-- **原因**: コマンドのタイプミス、必要なパッケージの不足、パーミッションの問題。
+### 問題: エラーの無限ループ
+
+- **原因**: 同じエラーを繰り返し解決できない
 - **解決策**:
-    1. **コマンドの検証**: `devcontainer.json`の`postCreateCommand`に記述されたコマンドが正しいか、手動でコンテナ内で実行して確認します。
-    2. **依存関係**: コマンドが必要とするパッケージ（例: `make`）がDockerfileでインストールされているか確認します。
-    3. **パーミッション**: `sudo`が必要なコマンドであれば適切に付与されているか、または`remoteUser`の権限で実行可能か確認します。
+1. **Geminiへのエスカレーション**:
+   
+   ```bash
+   gemini -p "think hard: [エラー詳細] このエラーが解決できない根本原因は？"
+   ```
+1. **コンテキストリセット**:
+   
+   ```bash
+   claude
+   > /clear
+   > /memory refresh
+   ```
+1. **代替アプローチ**:
+   
+   ```bash
+   /project:generate-alternative-implementation
+   ```
 
-## 4. フレームワーク全般
+## 🔍 Gemini CLI関連
 
-### 問題: ClaudeとGeminiの連携がうまくいかない
-- **原因**: `CLAUDE.md`や`GEMINI.md`の指示が不適切、カスタムコマンドの不備、ツールのバージョン非互換。
+### 問題: レート制限エラー
+
+- **原因**: 1000回/日の制限超過
 - **解決策**:
-    1. **行動規範ファイルの確認**: `CLAUDE.md`と`GEMINI.md`の内容を再確認し、それぞれの役割と連携方法が明確に記述されているか確認します。特に、ClaudeがGeminiにどのように相談するかの指示が重要です。
-    2. **カスタムコマンドのテスト**: `.claude/commands/`内のスクリプトが単体で正しく動作するか確認します。
-    3. **ツールのアップデート**: Claude CodeとGemini CLIを最新バージョンにアップデートします。
-       ```bash
-       npm update -g @anthropic-ai/claude-code @google/gemini-cli
-       ```
-    4. **シンプルなタスクで試す**: まずは簡単なタスクで連携を試し、問題の箇所を特定します。
+1. **APIキー使用**:
+   
+   ```bash
+   export GEMINI_API_KEY="your-api-key"
+   ```
+1. **クエリ最適化**: 複数の質問を1つにまとめる
+1. **キャッシュ活用**: 同じ質問を繰り返さない
 
-### 問題: コンテキストのオーバーフローや混乱
-- **原因**: 長時間の会話、多すぎる情報量。
+### 問題: Web検索結果が古い
+
+- **原因**: 検索クエリが不適切
 - **解決策**:
-    1. **定期的なリセット**: Claude Codeで定期的に`/clear`を実行し、コンテキストを整理します。
-    2. **タスクの分割**: 大きな開発タスクは小さなサブタスクに分割し、それぞれ個別に取り組みます。
-    3. **要約の活用**: 長い議論の後は、ClaudeやGeminiに要点をまとめさせ、それを新しいコンテキストの出発点とします。
-    4. **メモリファイルの活用**: `memory.json`に必要な情報を整理して記述し、Claudeに参照させます。
+1. **日付指定**:
+   
+   ```bash
+   gemini -p "Next.js 14 App Router 2025年の最新情報"
+   ```
+1. **具体的なバージョン指定**:
+   
+   ```bash
+   gemini -p "React 18.3.0 の新機能"
+   ```
 
-上記以外で問題が解決しない場合は、各ツールの公式ドキュメントやコミュニティフォーラムも参照してください。
+### 問題: PDFが読み込めない
+
+- **原因**: PDFディレクトリの設定ミス
+- **解決策**:
+1. **ディレクトリ確認**:
+   
+   ```bash
+   ls -la ~/PDF/
+   ```
+1. **権限設定**:
+   
+   ```bash
+   chmod 755 ~/PDF
+   chmod 644 ~/PDF/*.pdf
+   ```
+1. **Dev Containerのマウント確認**:
+   
+   ```json
+   // .devcontainer/devcontainer.json
+   "mounts": [{
+     "source": "${localEnv:HOME}/PDF",
+     "target": "/home/node/PDF",
+     "type": "bind"
+   }]
+   ```
+
+## 🔄 連携関連の問題
+
+### 問題: 仕様書の同期が失敗する
+
+- **原因**: ファイル形式の不一致、パーサーエラー
+- **解決策**:
+1. **仕様書の検証**:
+   
+   ```bash
+   node scripts/kiro-bridge.js validate
+   ```
+1. **手動同期**:
+   
+   ```bash
+   node scripts/sync-spec.js
+   ```
+1. **ログ確認**:
+   
+   ```bash
+   cat .kiro/specs/sync-progress.json
+   ```
+
+### 問題: AIツール間の連携が機能しない
+
+- **原因**: 設定ファイルの不整合
+- **解決策**:
+1. **設定ファイルの確認**:
+   
+   ```bash
+   # 各設定ファイルが存在するか確認
+   test -f .claude/memory.json && echo "✓ Claude設定OK"
+   test -f .gemini/settings.json && echo "✓ Gemini設定OK"
+   test -f .kiro/settings.json && echo "✓ Kiro設定OK"
+   ```
+1. **バージョン互換性**:
+   
+   ```bash
+   claude --version
+   gemini --version
+   # Kiroのバージョンはアプリ内で確認
+   ```
+
+## 🐛 一般的なエラーと解決策
+
+### TypeScriptエラー
+
+```typescript
+// エラー: Cannot find module '@/types'
+// 解決策: tsconfig.jsonのpaths設定を確認
+{
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
+}
+```
+
+### ESLintエラー
+
+```bash
+# 自動修正
+npm run lint:fix
+
+# 特定のルールを無効化
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+```
+
+### テスト失敗
+
+```bash
+# 詳細なエラー情報
+npm test -- --verbose
+
+# 特定のテストのみ実行
+npm test -- --testNamePattern="UserAuth"
+
+# カバレッジ無視
+/* istanbul ignore next */
+```
+
+## 📊 パフォーマンス問題
+
+### ビルドが遅い
+
+1. **依存関係の最適化**:
+   
+   ```bash
+   npm run analyze-bundle
+   ```
+1. **不要なインポートの削除**:
+   
+   ```bash
+   npm run lint:fix
+   ```
+
+### 開発サーバーが重い
+
+1. **キャッシュクリア**:
+   
+   ```bash
+   make clean
+   ```
+1. **メモリ割り当て増加**:
+   
+   ```bash
+   NODE_OPTIONS="--max-old-space-size=4096" npm run dev
+   ```
+
+## 🚨 緊急時の対処法
+
+### 全てのAIが使用できない場合
+
+1. **手動モード**: 従来の開発手法にフォールバック
+1. **ローカルLLM**: Ollama等のローカルLLMを一時的に使用
+1. **チーム開発**: 他の開発者と協力
+
+### データ損失の回避
+
+```bash
+# 定期的なバックアップ
+git add -A && git commit -m "WIP: $(date)"
+
+# 仕様書のバックアップ
+cp -r .kiro/specs .kiro/specs.backup.$(date +%Y%m%d)
+```
+
+## 📞 サポートとコミュニティ
+
+### 公式ドキュメント
+
 - [Claude Code Documentation](https://docs.anthropic.com/claude-code)
-- [Gemini CLI GitHub Issues](https://github.com/google-gemini/gemini-cli/issues)
-- [Dev Containers Documentation](https://containers.dev/docs)
+- [Gemini CLI GitHub](https://github.com/google-gemini/gemini-cli)
+- [Kiro Documentation](https://kiro.dev/docs)
+
+### コミュニティ
+
+- Discord: 各ツールの公式Discordサーバー
+- GitHub Issues: バグ報告と機能リクエスト
+- Stack Overflow: タグ `new-triforce-dev`
+
+### ログとデバッグ
+
+```bash
+# 統合ログビューアー
+tail -f .kiro/logs/latest.log .claude/logs/*.log
+
+# デバッグモード
+DEBUG=* npm run dev
+```
+
+-----
+
+**問題が解決しない場合は、コミュニティフォーラムで質問するか、より詳細なログを添えてIssueを作成してください。**
