@@ -1,0 +1,88 @@
+{
+  "projectName": "new-triforce-project",
+  "language": "ja",
+  "model": "claude-sonnet-4",
+  "backupModel": "claude-sonnet-3.7",
+  "specDrivenDevelopment": {
+    "enabled": true,
+    "autoGenerateSpecs": true,
+    "requirementsFormat": "EARS",
+    "includeEdgeCases": true,
+    "generateDataFlowDiagrams": true
+  },
+  "hooks": {
+    "enabled": true,
+    "availableHooks": [
+      {
+        "name": "spec-validation",
+        "description": "仕様書の整合性を検証",
+        "trigger": "on-spec-save",
+        "action": "validate-spec-consistency"
+      },
+      {
+        "name": "code-standards-check",
+        "description": "コーディング規約の遵守をチェック",
+        "trigger": "on-file-save",
+        "action": "check-coding-standards"
+      },
+      {
+        "name": "test-generation",
+        "description": "仕様書からテストケースを生成",
+        "trigger": "on-spec-complete",
+        "action": "generate-test-cases"
+      },
+      {
+        "name": "documentation-update",
+        "description": "コード変更時にドキュメントを更新",
+        "trigger": "on-commit",
+        "action": "update-documentation"
+      }
+    ]
+  },
+  "integrations": {
+    "claudeCode": {
+      "enabled": true,
+      "syncPath": ".kiro/specs",
+      "autoSync": true
+    },
+    "geminiCli": {
+      "enabled": true,
+      "reviewOnComplete": true
+    },
+    "git": {
+      "enabled": true,
+      "autoCommitSpecs": false,
+      "branchNaming": "feature/kiro-{task-id}"
+    }
+  },
+  "templates": {
+    "specTemplate": "templates/spec-template.md",
+    "testTemplate": "templates/test-template.js",
+    "componentTemplate": "templates/component-template.tsx"
+  },
+  "aiSettings": {
+    "temperature": 0.3,
+    "maxTokens": 8000,
+    "contextWindow": 100000,
+    "systemPrompt": "あなたは経験豊富なソフトウェアアーキテクトです。要件を明確で実装可能な仕様書に変換してください。"
+  },
+  "outputSettings": {
+    "specDirectory": ".kiro/specs",
+    "hooksDirectory": ".kiro/hooks",
+    "logsDirectory": ".kiro/logs",
+    "includeTimestamps": true,
+    "versionControl": true
+  },
+  "qualityGates": {
+    "minSpecCompleteness": 90,
+    "requireAllSections": true,
+    "mandatorySections": [
+      "project-overview",
+      "user-stories",
+      "technical-design",
+      "api-specification",
+      "database-schema",
+      "implementation-tasks"
+    ]
+  }
+}
