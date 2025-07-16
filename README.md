@@ -32,7 +32,7 @@
 
 ```bash
 # リポジトリをクローン
-git clone https://github.com/yourname/new-triforce-dev.git
+git clone https://github.com/turnDeep/new-triforce-dev.git
 cd new-triforce-dev
 
 # Dev Containerで開く（推奨）
