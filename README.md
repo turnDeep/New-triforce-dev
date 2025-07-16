@@ -49,7 +49,7 @@ Kiroはデスクトップアプリのため、別途インストールが必要�
 
 1. [Kiro公式サイト](https://kiro.dev/)からダウンロード
 1. インストール後、Google/GitHub/AWS SSOでログイン
-1. `.kiro/KIRO.md`をKiroプロジェクトにコピー
+1. `KIRO.md`をKiroプロジェクトにコピー
 
 ### 4. 初回認証
 
