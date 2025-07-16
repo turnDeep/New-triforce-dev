@@ -1,105 +1,171 @@
-# 🔺 Triforce Dev Framework 🔺
+# 🔺 New-triforce-dev Framework 🔺
 
-**人間 × Claude Code × Gemini CLI = 開発効率の最大化**
+**Kiro × Claude Code × Gemini CLI = 完全自動化されたAI開発**
 
-このリポジトリは、人間、Claude Code、Gemini CLIの三者が協力して開発を進めるための「三位一体開発フレームワーク」のテンプレートです。それぞれの強みを活かし、弱点を補い合うことで、より効率的で質の高い開発を目指します。
+人間はアイディアを提示するだけ。3つのAIが協力して、要件定義から実装、検証まで全てを自動化する次世代開発フレームワークです。
 
-## ✨ クイックスタート
+## ✨ 特徴
 
-1. **リポジトリをクローンまたはテンプレートとして使用:**
-   ```bash
-   git clone https://github.com/turnDeep/triforce-dev.git
-   # または GitHub UI で "Use this template" をクリック
-   ```
+- **🎯 人間の介入を最小化**: アイディアの提示のみで、AIが開発プロセス全体を管理
+- **📋 スペック駆動開発**: Kiroが要件を整理し、明確な仕様書を自動生成
+- **⚡ 高速実装**: Claude Codeが仕様書に基づいて正確にコーディング
+- **🔍 自動検証**: Gemini CLIがWeb検索を活用して技術検証とレビューを実施
+- **💰 無料枠最適化**: 各AIの無料枠を最大限活用する賢い役割分担
 
-2. **Dev Containerで開く (推奨):**
-   - VS Codeでプロジェクトを開きます。
-   - 右下に表示される「Reopen in Container」通知をクリック、またはコマンドパレット (Cmd/Ctrl+Shift+P) から「Dev Containers: Reopen in Container」を選択。
-   - 初回起動時、必要なツール (`@anthropic-ai/claude-code`, `@google/gemini-cli`) が自動インストールされ、`make setup`が実行されます。
+## 🤖 3つのAIの役割
 
-3. **手動セットアップ (Dev Containerを使用しない場合):**
-   - 詳細は [PROJECT_SETUP.md](PROJECT_SETUP.md) を参照してください。
-   - 簡単に言うと:
-     ```bash
-     npm install -g @anthropic-ai/claude-code @google/gemini-cli
-     make setup  # または PROJECT_SETUP.md 内の個別コマンド実行
-     ```
+|AI             |役割 |得意分野                 |無料枠      |
+|---------------|---|---------------------|---------|
+|**Amazon Kiro**|建築家|要件定義、仕様書作成、設計        |月50回     |
+|**Claude Code**|実装者|コーディング、リファクタリング、Git操作|Max40回/5h|
+|**Gemini CLI** |検証者|技術調査、Web検索、コードレビュー   |1000回/日  |
 
-4. **ClaudeとGeminiの初期設定:**
-   - **Claude**: `memory.json.sample` を参考に `~/.claude/memory.json` を作成・編集。
-   - **Gemini**: `settings.json.sample` を参考に `~/.gemini/settings.json` を作成・編集。
-   - 初回利用時に各CLIで認証が必要です (`claude` と `gemini` をターミナルで実行)。
+## 🚀 クイックスタート
 
-5. **開発開始！**
-   - `CLAUDE.md` と `GEMINI.md` をプロジェクトに合わせてカスタマイズします。
-   - Claude Codeを起動 (`claude`) し、開発を開始します。
-   - 必要に応じて `Makefile` のコマンド (`make test`, `make lint` など) を活用します。
+### 1. 前提条件
 
-## 🎯 フレームワークの目的
+- Node.js 20以上
+- Docker Desktop（Dev Container使用時）
+- Windows/Mac/Linux環境
 
-- **品質向上**: Claudeの計画・実装力とGeminiの調査・分析力を組み合わせ、人間のレビュー負荷を軽減。
-- **効率化**: 反復作業や定型的な調査をAIに任せ、人間はより創造的なタスクに集中。
-- **トークン節約**: Geminiによる事前調査でClaudeの試行錯誤を減らし、トークン消費を最適化。
-- **属人化防止**: `CLAUDE.md` や `GEMINI.md` にプロジェクト知識を集約。
+### 2. セットアップ
 
-## 🛠️ 主要ファイルとディレクトリ
+```bash
+# リポジトリをクローン
+git clone https://github.com/yourname/new-triforce-dev.git
+cd new-triforce-dev
 
-- **`CLAUDE.md`**: Claude Codeへの指示書。プロジェクトの憲法。
-- **`GEMINI.md`**: Gemini CLIへの指示書 (Claude経由で利用)。プロジェクトの賢者。
-- **`.claude/commands/`**: Claude用カスタムコマンド群。魔法の呪文集。
-- **`docs/`**: 詳細ドキュメント。知恵の書。
-  - [フォルダ構造](docs/FOLDER_STRUCTURE.md)
-  - [Dev Containerセットアップ](docs/DEVCONTAINER_SETUP.md)
-  - [トラブルシューティング](docs/TROUBLESHOOTING.md)
-- **`Makefile`**: 便利なコマンド集。万能ツールナイフ。
-- **`memory.json.sample` / `settings.json.sample`**: AIツールの設定テンプレート。
+# Dev Containerで開く（推奨）
+# VS Codeで「Reopen in Container」を選択
 
-詳細は [フォルダ構造ガイド](docs/FOLDER_STRUCTURE.md) を参照してください。
+# または手動セットアップ
+npm install -g @anthropic-ai/claude-code @google/gemini-cli
+make setup
+```
 
-## 🤖 AI連携の特徴
+### 3. Kiroのセットアップ（別途必要）
 
-- **自動相談**: Claude Codeが必要に応じてGeminiに自動で相談
-- **段階的自動化**: レベル1〜3で自動化度合いを調整可能
-- **シームレス連携**: ユーザーは意識せずに三位一体開発を体験
+Kiroはデスクトップアプリのため、別途インストールが必要です：
 
-詳細は [Gemini連携ガイド](docs/GEMINI_INTEGRATION.md) を参照。
+1. [Kiro公式サイト](https://kiro.dev/)からダウンロード
+1. インストール後、Google/GitHub/AWS SSOでログイン
+1. `.kiro/KIRO.md`をKiroプロジェクトにコピー
 
-## 🤝 三位一体の連携フロー (例)
+### 4. 初回認証
 
-1. **人間**: Claudeに開発要件を伝える (例: 「ユーザー認証機能を実装して」)。
-2. **Claude**:
-   - `GEMINI.md` の内容と人間の指示を元に、Geminiに調査を依頼 (例: 「Next.jsでの最適な認証方法は？」)。
-   - Geminiの回答を参考に実装計画を立案。
-3. **Gemini**: 調査結果や複数の選択肢、注意点などをClaudeに提供。
-4. **Claude**: 人間に計画を提示し、承認を得てから実装開始。
-5. **人間**: 実装計画をレビュー・承認。
-6. **Claude**: コーディング。適宜Geminiに相談 (例: 「このエラーの原因は？」)。
-7. **人間/Claude**: `/project:review-with-gemini`のようなカスタムコマンドでGeminiにコードレビューを依頼。
-8. **Gemini**: コードの問題点や改善案を指摘。
-9. **Claude/人間**: レビュー結果を元に修正。
-10. **人間**: 最終確認とマージ。
+```bash
+# Claude Code認証
+claude
+# → ブラウザでAnthropicアカウントにログイン
+
+# Gemini CLI認証
+gemini
+# → Googleアカウントでログイン
+```
+
+### 5. 開発開始！
+
+```bash
+# Kiroで要件定義（Kiro IDE内で実行）
+"ユーザー認証システムを作りたい"
+
+# 生成された仕様書をプロジェクトに同期
+make sync-spec
+
+# Claude Codeで実装
+claude
+> /project:implement-spec
+
+# 自動的にGeminiが検証・レビュー
+```
+
+## 📊 開発フロー
+
+```mermaid
+graph LR
+    A[人間: アイディア] --> B[Kiro: 要件定義]
+    B --> C[Kiro: 仕様書生成]
+    C --> D[Claude: 実装計画]
+    D --> E[Gemini: 技術調査]
+    E --> F[Claude: コーディング]
+    F --> G[Gemini: コードレビュー]
+    G --> H[Claude: 修正]
+    H --> I[完成]
+```
+
+## 🛠️ 主要コマンド
+
+```bash
+# 基本コマンド
+make help          # ヘルプ表示
+make setup         # 初期セットアップ
+make dev           # 開発サーバー起動
+make test          # テスト実行
+
+# AI連携コマンド
+make sync-spec     # Kiroの仕様書を同期
+make implement     # 仕様書から実装
+make verify        # Geminiで検証
+make review        # コードレビュー
+```
+
+## 📁 プロジェクト構造
+
+```
+new-triforce-dev/
+├── KIRO.md         # Kiroの行動規範
+├── CLAUDE.md       # Claude Codeの行動規範
+├── GEMINI.md       # Gemini CLIの行動規範
+├── .kiro/          # Kiro関連ファイル
+├── scripts/        # AI連携スクリプト
+└── docs/           # 詳細ドキュメント
+```
+
+## 💡 使用例
+
+### 例1: TODO管理アプリ
+
+```bash
+# Kiroで要件定義
+"タスク管理ができるWebアプリを作りたい。
+優先度設定、期限管理、カテゴリ分けができるように。"
+
+# 自動的に以下が生成される：
+# - ユーザーストーリー
+# - データモデル設計
+# - API仕様
+# - 実装タスクリスト
+```
+
+### 例2: リアルタイムチャット
+
+```bash
+# より複雑な要件も処理可能
+"WebSocketを使ったリアルタイムチャットアプリ。
+複数ルーム、メンション機能、絵文字リアクション付き。"
+```
 
 ## 🔧 カスタマイズ
 
-- **`CLAUDE.md` / `GEMINI.md`**: あなたのプロジェクトに合わせて、これらのファイルを徹底的にカスタマイズしてください。これがフレームワーク活用の鍵です。
-- **`.claude/commands/`**: プロジェクト固有の便利なコマンドを追加・編集。
-- **`Makefile`**: チームでよく使うコマンドを登録。
+- **KIRO.md**: プロジェクト固有の要件定義ルール
+- **CLAUDE.md**: コーディング規約、技術スタック
+- **GEMINI.md**: レビュー基準、検証項目
+- **CODING_STANDARDS.md**: 統一コーディング規約
 
-## 💡 ヒント
+## ⚠️ 注意事項
 
-- **具体的指示**: AIには曖昧な指示より具体的な指示が有効です。
-- **役割分担の明確化**: `CLAUDE.md`と`GEMINI.md`で各AIの役割を明確に定義しましょう。
-- **反復的改善**: 一度で完璧を目指さず、AIとの対話を通じて徐々に成果物を改善していくのがコツです。
-- **人間による最終判断**: AIは強力なアシスタントですが、最終的な意思決定と責任は人間が持ちます。
+- Kiroは月50回の制限があるため、要件定義は慎重に
+- Claude Codeは5時間で40回までなので、効率的な実装を心がける
+- Geminiは1日1000回と余裕があるため、検証は積極的に活用
 
-## 🙏 貢献
+## 🤝 貢献
 
-バグ報告、機能提案、プルリクエストを歓迎します！
+このフレームワークは実験的プロジェクトです。改善提案、バグ報告、プルリクエストを歓迎します！
 
 ## 📜 ライセンス
 
-このプロジェクトは [MITライセンス](LICENSE) の下で公開されています。
+MIT License - 詳細は<LICENSE>を参照
 
----
+-----
 
-**このフレームワークが、あなたの開発プロジェクトを次のレベルへと導く一助となれば幸いです！** 🚀
+**🎯 目標**: 人間の創造性とAIの実装力を組み合わせ、アイディアを最速で形にする
