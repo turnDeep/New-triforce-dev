@@ -19,7 +19,7 @@ npm --version
 #### 2.1 VS Codeで開く
 
 ```bash
-git clone https://github.com/yourname/new-triforce-dev.git
+git clone https://github.com/turnDeep/new-triforce-dev.git
 cd new-triforce-dev
 code .
 ```
