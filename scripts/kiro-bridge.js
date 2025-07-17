@@ -7,7 +7,6 @@
 
 const fs = require('fs').promises;
 const path = require('path');
-const { exec } = require('child_process').promise;
 
 class KiroBridge {
   constructor() {
@@ -116,7 +115,7 @@ ${new Date().toISOString()}
           size: stat.size,
           modified: stat.mtime
         };
-      } catch (error) {
+      } catch {
         validation.complete = false;
         validation.missing.push(file);
         validation.files[file] = {
@@ -167,7 +166,7 @@ ${new Date().toISOString()}
       );
       
       // npm パッケージを抽出
-      const packageRegex = /@?[\w\-\/]+@[\d\.]+/g;
+      const packageRegex = /@?[\w-/]+@[\d.]+/g;
       const packages = designContent.match(packageRegex) || [];
       metadata.dependencies = [...new Set(packages)];
       
