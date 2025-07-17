@@ -16,3 +16,8 @@
 # IDEファイル（既に含まれている場合は不要）
 .vscode/
 .idea/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-error.log*

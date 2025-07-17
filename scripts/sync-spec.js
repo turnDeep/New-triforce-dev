@@ -121,7 +121,7 @@ class SpecSynchronizer {
    */
   parseApiRoutes(apiContent) {
     const routes = [];
-    const routeRegex = /(GET|POST|PUT|DELETE|PATCH)\s+(\/[\w\-\/{}]+)/g;
+    const routeRegex = /(GET|POST|PUT|DELETE|PATCH)\s+(\/[\w\-/{}[\]]+)/g;
     let match;
     
     while ((match = routeRegex.exec(apiContent)) !== null) {
@@ -268,7 +268,7 @@ export async function handler(
       const latestLink = path.join(this.specsDir, 'latest');
       try {
         await fs.unlink(latestLink);
-      } catch (e) {
+      } catch {
         // リンクが存在しない場合は無視
       }
       await fs.symlink(latestSpec, latestLink);
